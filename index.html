@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Almoxarifado Hospitalar | Unimed Litoral</title>
+<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/print.css">
+<script defer src="src/ui/errors.js"></script>
+<script defer src="src/data/storage.js"></script>
+<script defer src="src/ui/common.js"></script>
+<script defer src="src/features/reports.js"></script>
+<script defer src="src/features/operators.js"></script>
+<script defer src="src/features/withdrawals.js"></script>
+<script defer src="src/features/loans.js"></script>
+<script defer src="src/ui/vouchers.js"></script>
+<script defer src="src/data/backup.js"></script>
+<script defer src="src/app.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <button type="button" id="navigationToggle" class="navigation-toggle no-print" aria-controls="navigationDrawer" aria-expanded="false" aria-haspopup="dialog">
+        <span class="menu-icon" aria-hidden="true"></span>
+        Menu
+      </button>
+      <img class="brand-logo" src="assets/img/logo-almoxarifado.jpg" alt="Logotipo Almoxarifado Admin" width="72" height="72">
+      <h1>Almoxarifado Hospitalar</h1>
+    </div>
+
+    <div class="operator-box no-print">
+      <div>
+        <label for="activeOperator">Operador ativo</label>
+        <select id="activeOperator"></select>
+      </div>
+      <span id="operatorRoleBadge" class="operator-role">Almoxarife</span>
+      <button type="button" class="secondary sm" id="switchPinBtn" title="Trocar operador ou validar PIN">Trocar / PIN</button>
+      <div class="operator-meta">
+        <div id="clockDisplay"></div>
+        <div>Atalho: <b>Enter</b> adiciona item</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<dialog id="navigationDrawer" class="navigation-drawer no-print" aria-labelledby="navigationTitle">
+  <div class="drawer-heading">
+    <h2 id="navigationTitle">Navegação</h2>
+    <button type="button" id="navigationClose" class="quiet sm" autofocus>Fechar</button>
+  </div>
+  <nav class="tabs" aria-label="Seções do almoxarifado">
+    <button type="button" class="tab active" data-tab="new" aria-controls="new" aria-pressed="true" id="tabNewBtn"><span>Nova retirada</span></button>
+    <button type="button" class="tab" data-tab="loan_out" aria-controls="loan_out" aria-pressed="false" id="tabLoanOutBtn"><span>Saída de empréstimo</span> <span id="openLoansBadge" class="tag loan-open" hidden>0 abertos</span></button>
+    <button type="button" class="tab" data-tab="loan_in" aria-controls="loan_in" aria-pressed="false" id="tabLoanInBtn"><span>Entrada de empréstimo</span> <span id="openLoansInBadge" class="tag loan-open" hidden>0 abertos</span></button>
+    <button type="button" class="tab" data-tab="history" aria-controls="history" aria-pressed="false" id="tabHistoryBtn"><span>Histórico</span> <span id="pendingBadge" class="tag pending" hidden>0 pendentes</span></button>
+    <button type="button" class="tab" data-tab="reports" aria-controls="reports" aria-pressed="false" id="tabReportsBtn"><span>Relatórios e Plantão</span></button>
+    <button type="button" class="tab" data-tab="users" aria-controls="users" aria-pressed="false" id="tabUsersBtn"><span>Usuários e Auditoria</span></button>
+  </nav>
+</dialog>
+
+<main>
+  <!-- ABA 1: NOVA RETIRADA / EDIÇÃO -->
+  <section id="new" class="panel">
+    <div id="editBanner" class="edit-banner hidden">
+      <span id="editBannerText">Editando protocolo SAI-000000</span>
+      <button type="button" class="secondary sm" id="cancelEditBtn">Cancelar edição</button>
+    </div>
+
+    <h2 id="formTitle">Registrar retirada avulsa</h2>
+    <h3>Dados da retirada</h3>
+    <div class="grid">
+      <div>
+        <label for="requester">Nome de quem solicitou * <span class="muted" style="font-weight:400">(autocompleta)</span></label>
+        <input id="requester" list="peopleCatalog" autocomplete="off" placeholder="Ex: Enf. Carla Mendes">
+      </div>
+      <div>
+        <label for="receiver">
+          <span>Nome de quem recebeu *</span>
+          <button type="button" class="link-btn" id="sameAsRequester">Mesmo que solicitante</button>
+        </label>
+        <input id="receiver" list="peopleCatalog" autocomplete="off" placeholder="Nome de quem retirou no balcão">
+        <datalist id="peopleCatalog"></datalist>
+      </div>
+      <div>
+        <label for="sector">Setor de destino *</label>
+        <select id="sector">
+          <option value="">Selecione o setor...</option>
+          <option value="Atendimento">Atendimento</option>
+          <option value="CME">CME</option>
+          <option value="Farmácia">Farmácia</option>
+          <option value="Farmácia Setor">Farmácia Setor</option>
+          <option value="Farmácia Oncológico">Farmácia Oncológico</option>
+          <option value="Hospitalidade">Hospitalidade</option>
+          <option value="Unidade de Internação">Unidade de Internação</option>
+          <option value="Centro Cirúrgico">Centro Cirúrgico</option>
+          <option value="Endoscopia">Endoscopia</option>
+          <option value="CTI">CTI</option>
+          <option value="Nutrição">Nutrição</option>
+          <option value="Almoxarifado">Almoxarifado</option>
+          <option value="Imagem">Imagem</option>
+          <option value="Radiologia">Radiologia</option>
+          <option value="Mamografia">Mamografia</option>
+          <option value="Tomografia">Tomografia</option>
+          <option value="Pronto Atendimento">Pronto Atendimento</option>
+          <option value="Laboratório">Laboratório</option>
+          <option value="Ortopedia">Ortopedia</option>
+          <option value="Outros">Outros</option>
+        </select>
+      </div>
+      <div>
+        <label for="storekeeper">
+          <span>Almoxarife responsável pela entrega *</span>
+          <span class="muted" style="font-weight:400">(sincroniza com operador)</span>
+        </label>
+        <input id="storekeeper" autocomplete="off" placeholder="Nome do almoxarife">
+      </div>
+      <div class="full">
+        <label for="reason">Motivo da saída fora de pedido</label>
+        <select id="reason">
+          <option>Urgência / Emergência assistencial</option>
+          <option>Falta de pedido sistêmico</option>
+          <option>Reposição emergencial de estoque</option>
+          <option>Falha / Indisponibilidade do sistema</option>
+          <option>Necessidade pontual do setor</option>
+          <option>Outro</option>
+        </select>
+      </div>
+    </div>
+
+    <h3>Materiais / medicamentos</h3>
+    <div class="item-entry" id="entryBox">
+      <div class="product">
+        <label for="product">Descrição do produto * <span class="muted" style="font-weight:400">(autocompleta histórico)</span></label>
+        <input id="product" list="productCatalog" autocomplete="off" placeholder="Digite o nome do material ou medicamento...">
+        <datalist id="productCatalog"></datalist>
+      </div>
+      <div>
+        <label for="quantity">Qtd. *</label>
+        <input id="quantity" type="number" min="0.01" step="any" value="1">
+      </div>
+      <div>
+        <label for="unit">Unidade</label>
+        <select id="unit">
+          <option>Unidade</option>
+          <option>Pacote</option>
+          <option>Caixa</option>
+          <option>Frasco</option>
+          <option>Ampola</option>
+          <option>Comprimido</option>
+          <option>Rolo</option>
+          <option>Kit</option>
+          <option>Par</option>
+          <option>Litro</option>
+          <option>Outro</option>
+        </select>
+      </div>
+      <div>
+        <label for="batch">Lote <span class="muted" style="font-weight:400">(opc.)</span></label>
+        <input id="batch" autocomplete="off" placeholder="Ex: L2409A">
+      </div>
+      <div>
+        <label for="expiry">Validade <span class="muted" style="font-weight:400">(opc.)</span></label>
+        <input id="expiry" type="month">
+      </div>
+      <button type="button" class="primary" id="addItem">+ Adicionar</button>
+    </div>
+    <div id="expiryHint" class="expiry-hint"></div>
+
+    <div id="itemList" aria-live="polite" style="margin-top:10px">
+      <p class="muted">Nenhum produto adicionado à ficha.</p>
+    </div>
+
+    <h3>Observações e conclusão</h3>
+    <div class="grid">
+      <div class="full">
+        <label for="notes">Observações / Nº de requisição futura (opcional)</label>
+        <textarea id="notes" placeholder="Ex: Solicitado via telefone pelo plantão noturno; aguarda geração de pedido no sistema."></textarea>
+      </div>
+    </div>
+
+    <div class="actions form-actions no-print">
+      <button type="button" class="primary" id="save">Finalizar retirada e gerar protocolo</button>
+      <div class="print-actions">
+        <button type="button" class="secondary" id="saveAndPrint">Finalizar e imprimir comprovante</button>
+        <label class="check-inline" title="Imprime Via do Almoxarifado e Via do Setor na mesma folha A4">
+          <input type="checkbox" id="twoCopiesCheck" checked> Imprimir em 2 vias (A4)
+        </label>
+      </div>
+      <button type="button" class="quiet" id="clearFormBtn">Limpar formulário</button>
+    </div>
+    <div id="formMessage" class="status-msg" role="status"></div>
+  </section>
+
+  <!-- ABA 2: SAÍDA DE EMPRÉSTIMO -->
+  <section id="loan_out" class="panel hidden">
+    <div id="loanEditBanner" class="edit-banner hidden">
+      <span id="loanEditBannerText">Editando saída de empréstimo EMP-000000</span>
+      <button type="button" class="secondary sm" id="cancelLoanEditBtn">Cancelar edição</button>
+    </div>
+
+    <div class="section-title">
+      <h2 id="loanFormTitle">Saída de empréstimo (material / equipamento)</h2>
+      <a class="section-link" href="#loanListTitle">Ver saídas registradas</a>
+    </div>
+    <h3>Dados do empréstimo</h3>
+
+    <div class="grid">
+      <div>
+        <label for="loanRequester">Nome de quem solicitou * <span class="muted" style="font-weight:400">(autocompleta)</span></label>
+        <input id="loanRequester" list="peopleCatalog" autocomplete="off" placeholder="Ex: Enf. Carla Mendes">
+      </div>
+      <div>
+        <label for="loanReceiver">
+          <span>Nome de quem recebeu *</span>
+          <button type="button" class="link-btn" id="loanSameAsRequester">Mesmo que solicitante</button>
+        </label>
+        <input id="loanReceiver" list="peopleCatalog" autocomplete="off" placeholder="Nome de quem retirou no balcão">
+      </div>
+      <div>
+        <label for="loanSector">Empresa solicitante * <span class="muted" style="font-weight:400">(autocompleta)</span></label>
+        <input id="loanSector" list="companyCatalog" autocomplete="off" placeholder="Ex: Hospital / Unidade / Empresa solicitante">
+        <datalist id="companyCatalog"></datalist>
+      </div>
+      <div>
+        <label for="loanStorekeeper">
+          <span>Almoxarife responsável pela entrega *</span>
+          <span class="muted" style="font-weight:400">(sincroniza com operador)</span>
+        </label>
+        <input id="loanStorekeeper" autocomplete="off" placeholder="Nome do almoxarife">
+      </div>
+      <div>
+        <label for="loanExpectedReturn">Previsão de devolução (opcional)</label>
+        <input id="loanExpectedReturn" type="date">
+      </div>
+      <div>
+        <label for="loanReason">Motivo / Condição da saída de empréstimo</label>
+        <select id="loanReason">
+          <option>Empréstimo temporário entre empresas / unidades</option>
+          <option>Cobertura de falta momentânea no setor</option>
+          <option>Uso em procedimento / equipamento</option>
+          <option>Aguardando reposição / retorno de lote</option>
+          <option>Outro</option>
+        </select>
+      </div>
+    </div>
+
+    <h3>Itens da saída de empréstimo</h3>
+    <div class="item-entry" id="loanEntryBox">
+      <div class="product">
+        <label for="loanProduct">Descrição do item * <span class="muted" style="font-weight:400">(autocompleta histórico)</span></label>
+        <input id="loanProduct" list="productCatalog" autocomplete="off" placeholder="Digite o nome do material, kit ou equipamento...">
+      </div>
+      <div>
+        <label for="loanQuantity">Qtd. *</label>
+        <input id="loanQuantity" type="number" min="0.01" step="any" value="1">
+      </div>
+      <div>
+        <label for="loanUnit">Unidade</label>
+        <select id="loanUnit">
+          <option>Unidade</option>
+          <option>Pacote</option>
+          <option>Caixa</option>
+          <option>Frasco</option>
+          <option>Ampola</option>
+          <option>Comprimido</option>
+          <option>Rolo</option>
+          <option>Kit</option>
+          <option>Par</option>
+          <option>Litro</option>
+          <option>Outro</option>
+        </select>
+      </div>
+      <div>
+        <label for="loanBatch">Lote / Patrimônio</label>
+        <input id="loanBatch" autocomplete="off" placeholder="Ex: PAT-102 ou L2409A">
+      </div>
+      <div>
+        <label for="loanExpiry">Validade <span class="muted" style="font-weight:400">(opc.)</span></label>
+        <input id="loanExpiry" type="month">
+      </div>
+      <button type="button" class="primary" id="loanAddItem">+ Adicionar</button>
+    </div>
+
+    <div id="loanItemList" aria-live="polite" style="margin-top:10px">
+      <p class="muted">Nenhum item adicionado à saída de empréstimo.</p>
+    </div>
+
+    <h3>Observações e conclusão</h3>
+    <div class="grid">
+      <div class="full">
+        <label for="loanNotes">Observações da saída de empréstimo (opcional)</label>
+        <textarea id="loanNotes" placeholder="Ex: Combinado retorno até o final do plantão; conferir integridade na devolução."></textarea>
+      </div>
+    </div>
+
+    <div class="actions form-actions no-print">
+      <button type="button" class="primary" id="saveLoan">Registrar saída de empréstimo</button>
+      <div class="print-actions">
+        <button type="button" class="secondary" id="saveLoanAndPrint">Registrar e imprimir comprovante</button>
+        <label class="check-inline" title="Imprime Via do Almoxarifado e Via do Setor na mesma folha A4">
+          <input type="checkbox" id="loanTwoCopiesCheck" checked> Imprimir em 2 vias (A4)
+        </label>
+      </div>
+      <button type="button" class="quiet" id="clearLoan">Limpar formulário</button>
+    </div>
+    <div id="loanMessage" class="status-msg" role="status"></div>
+
+    <h3 id="loanListTitle" tabindex="-1">Saídas de empréstimo registradas</h3>
+    <div class="grid filter-bar">
+      <div>
+        <label for="loanSearch">Filtrar saídas de empréstimo</label>
+        <input id="loanSearch" placeholder="Protocolo EMP-, empresa solicitante, pessoa, item ou lote...">
+      </div>
+      <div>
+        <label for="loanFilterStatus">Situação da devolução</label>
+        <select id="loanFilterStatus">
+          <option value="">Todas as saídas</option>
+          <option value="open">Aguardando devolução</option>
+          <option value="returned">Devolvidos</option>
+        </select>
+      </div>
+    </div>
+    <div id="loanRecords"></div>
+  </section>
+
+  <!-- ABA 3: ENTRADA DE EMPRÉSTIMO -->
+  <section id="loan_in" class="panel hidden">
+    <h2>Entrada de empréstimo (devolução / recebimento)</h2>
+    <h3>Registrar devolução vinculada</h3>
+    <div class="grid filter-bar" id="loanOpenFilters">
+      <div>
+        <label for="loanOpenSearch">Buscar saída em aberto</label>
+        <input id="loanOpenSearch" placeholder="Protocolo EMP-, setor, pessoa, item ou lote...">
+      </div>
+      <div>
+        <label for="loanOpenSectorFilter">Filtrar por setor</label>
+        <select id="loanOpenSectorFilter">
+          <option value="">Todos os setores</option>
+          <option value="Atendimento">Atendimento</option>
+          <option value="CME">CME</option>
+          <option value="Farmácia">Farmácia</option>
+          <option value="Farmácia Setor">Farmácia Setor</option>
+          <option value="Farmácia Oncológico">Farmácia Oncológico</option>
+          <option value="Hospitalidade">Hospitalidade</option>
+          <option value="Unidade de Internação">Unidade de Internação</option>
+          <option value="Centro Cirúrgico">Centro Cirúrgico</option>
+          <option value="Endoscopia">Endoscopia</option>
+          <option value="CTI">CTI</option>
+          <option value="Nutrição">Nutrição</option>
+          <option value="Almoxarifado">Almoxarifado</option>
+          <option value="Imagem">Imagem</option>
+          <option value="Radiologia">Radiologia</option>
+          <option value="Mamografia">Mamografia</option>
+          <option value="Tomografia">Tomografia</option>
+          <option value="Pronto Atendimento">Pronto Atendimento</option>
+          <option value="Laboratório">Laboratório</option>
+          <option value="Ortopedia">Ortopedia</option>
+          <option value="Outros">Outros</option>
+        </select>
+      </div>
+    </div>
+    <div id="openLoansForEntryList"></div>
+
+    <h3>Registrar nova entrada de empréstimo</h3>
+    <div class="grid">
+      <div>
+        <label for="loanInOrigin">Origem / Setor / Unidade *</label>
+        <input id="loanInOrigin" list="peopleCatalog" autocomplete="off" placeholder="Ex: Centro Cirúrgico / Unidade Parceira">
+      </div>
+      <div>
+        <label for="loanInReceiver">Quem recebeu no almoxarifado *</label>
+        <input id="loanInReceiver" autocomplete="off" placeholder="Nome do responsável pelo recebimento">
+      </div>
+      <div>
+        <label for="loanInSector">Empresa vinculada * <span class="muted" style="font-weight:400">(autocompleta)</span></label>
+        <input id="loanInSector" list="companyCatalog" autocomplete="off" placeholder="Ex: Hospital / Unidade / Empresa vinculada">
+      </div>
+      <div>
+        <label for="loanInRefProtocol">Protocolo de referência (opcional)</label>
+        <input id="loanInRefProtocol" autocomplete="off" placeholder="Ex: EMP-000001 ou NF/Guia">
+      </div>
+    </div>
+
+    <div id="loanReferenceSummary" class="reference-summary" role="status" hidden></div>
+
+    <h3>Itens recebidos</h3>
+    <div class="item-entry" id="loanInEntryBox">
+      <div class="product">
+        <label for="loanInProduct">Descrição do item recebido / devolvido *</label>
+        <input id="loanInProduct" list="productCatalog" autocomplete="off" placeholder="Nome do material ou equipamento...">
+      </div>
+      <div>
+        <label for="loanInQuantity">Qtd. *</label>
+        <input id="loanInQuantity" type="number" min="0.01" step="any" value="1">
+      </div>
+      <div>
+        <label for="loanInUnit">Unidade</label>
+        <select id="loanInUnit">
+          <option>Unidade</option>
+          <option>Pacote</option>
+          <option>Caixa</option>
+          <option>Frasco</option>
+          <option>Ampola</option>
+          <option>Comprimido</option>
+          <option>Rolo</option>
+          <option>Kit</option>
+          <option>Par</option>
+          <option>Litro</option>
+          <option>Outro</option>
+        </select>
+      </div>
+      <div>
+        <label for="loanInBatch">Lote / Patrimônio</label>
+        <input id="loanInBatch" autocomplete="off" placeholder="Ex: PAT-102">
+      </div>
+      <div>
+        <label for="loanInCondition">Condição</label>
+        <select id="loanInCondition">
+          <option>Íntegro / Conforme</option>
+          <option>Com avaria / Ressalva</option>
+          <option>Uso parcial / Consumido</option>
+        </select>
+      </div>
+      <button type="button" class="primary" id="loanInAddItem">+ Adicionar</button>
+    </div>
+
+    <div id="loanInItemList" aria-live="polite" style="margin-top:10px">
+      <p class="muted">Nenhum item adicionado à entrada de empréstimo.</p>
+    </div>
+
+    <h3>Observações e conclusão</h3>
+    <div class="grid">
+      <div class="full">
+        <label for="loanInNotes">Observações da entrada de empréstimo (opcional)</label>
+        <textarea id="loanInNotes" placeholder="Ex: Conferido na devolução/recebimento."></textarea>
+      </div>
+    </div>
+
+    <div class="actions form-actions no-print">
+      <button type="button" class="primary" id="saveLoanInBtn">Registrar entrada de empréstimo</button>
+      <button type="button" class="quiet" id="clearLoanInBtn">Limpar entrada</button>
+    </div>
+    <div id="loanInMessage" class="status-msg" role="status"></div>
+
+    <h3>Entradas de empréstimo registradas</h3>
+    <div id="loanInRecordsList"></div>
+  </section>
+
+  <!-- ABA 4: HISTÓRICO -->
+  <section id="history" class="panel hidden">
+    <h2>
+      <span>Histórico de retiradas</span>
+      <label class="check-inline no-print" style="font-weight:600">
+        <input type="checkbox" id="historyTwoCopies" checked> Imprimir comprovantes em 2 vias
+      </label>
+    </h2>
+    <div class="filter-bar history-filters no-print">
+      <div>
+        <label for="search">Pesquisar</label>
+        <input id="search" placeholder="Protocolo, nome, produto, lote ou Req. ERP...">
+      </div>
+      <div>
+        <label for="filterSector">Filtrar por setor</label>
+        <select id="filterSector">
+          <option value="">Todos os setores</option>
+          <option value="Atendimento">Atendimento</option>
+          <option value="CME">CME</option>
+          <option value="Farmácia">Farmácia</option>
+          <option value="Farmácia Setor">Farmácia Setor</option>
+          <option value="Farmácia Oncológico">Farmácia Oncológico</option>
+          <option value="Hospitalidade">Hospitalidade</option>
+          <option value="Unidade de Internação">Unidade de Internação</option>
+          <option value="Centro Cirúrgico">Centro Cirúrgico</option>
+          <option value="Endoscopia">Endoscopia</option>
+          <option value="CTI">CTI</option>
+          <option value="Nutrição">Nutrição</option>
+          <option value="Almoxarifado">Almoxarifado</option>
+          <option value="Imagem">Imagem</option>
+          <option value="Radiologia">Radiologia</option>
+          <option value="Mamografia">Mamografia</option>
+          <option value="Tomografia">Tomografia</option>
+          <option value="Pronto Atendimento">Pronto Atendimento</option>
+          <option value="Laboratório">Laboratório</option>
+          <option value="Ortopedia">Ortopedia</option>
+          <option value="Outros">Outros</option>
+        </select>
+      </div>
+      <div>
+        <label for="filterStatus">Situação no sistema</label>
+        <select id="filterStatus">
+          <option value="">Todas</option>
+          <option value="pending">Pendente lançamento</option>
+          <option value="done">Lançado no sistema</option>
+        </select>
+      </div>
+    </div>
+    <div id="historyRecords"></div>
+  </section>
+
+  <!-- ABA 5: RELATÓRIOS E PLANTÃO -->
+  <section id="reports" class="panel hidden">
+    <h2>Relatórios e Passagem de Plantão</h2>
+    <div class="stats">
+      <div class="stat">
+        <span>Total de retiradas</span>
+        <strong id="statTotal">0</strong>
+      </div>
+      <button type="button" class="stat" data-action="show-pending-withdrawals">
+        <span>Pendentes no sistema</span>
+        <strong id="statPending">0</strong>
+      </button>
+      <button type="button" class="stat" data-action="show-open-loans">
+        <span>Empréstimos em aberto</span>
+        <strong id="statLoansOpen">0</strong>
+      </button>
+      <div class="stat">
+        <span>Itens movimentados</span>
+        <strong id="statItems">0</strong>
+      </div>
+    </div>
+
+    <div class="report-cols">
+      <div>
+        <h3>Retiradas por setor</h3>
+        <div id="sectorBars"></div>
+      </div>
+      <div>
+        <h3>Resumo para passagem de plantão</h3>
+        <div id="shiftSummary" class="record"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABA 6: USUÁRIOS E AUDITORIA -->
+  <section id="users" class="panel hidden">
+    <h2>Usuários e Auditoria</h2>
+    <h3>Cadastro de operador</h3>
+    <div class="grid">
+      <div>
+        <label for="newUserName">Nome do operador</label>
+        <input id="newUserName" placeholder="Ex: João Silva">
+      </div>
+      <div>
+        <label for="newUserRole">Perfil</label>
+        <select id="newUserRole">
+          <option value="Almoxarife">Almoxarife</option>
+          <option value="Supervisor">Supervisor</option>
+          <option value="Conferente">Conferente</option>
+        </select>
+      </div>
+      <div>
+        <label for="newUserPin">PIN de confirmação (4 a 6 dígitos, opcional)</label>
+        <input id="newUserPin" type="password" maxlength="6" placeholder="Ex: 1234">
+      </div>
+      <div style="display:flex;align-items:flex-end">
+        <button type="button" class="primary" id="addUserBtn">Adicionar / Atualizar operador</button>
+      </div>
+    </div>
+    <div id="usersMessage" class="status-msg" role="status"></div>
+
+    <h3>Operadores cadastrados</h3>
+    <div id="usersList"></div>
+
+    <h3>Backups <span id="backupFolderAuthorized" class="tag done" role="status" hidden>Pasta autorizada</span></h3>
+    <div id="backupAlert" class="backup-alert hidden no-print">
+      <span id="backupAlertText"></span>
+      <button type="button" class="danger sm" style="background:#fff;border:1px solid var(--red)" id="backupAlertBtn">Baixar JSON</button>
+    </div>
+
+    <p id="autoBackupStatus" class="muted no-print" role="status" hidden></p>
+
+    <div class="actions backup-actions no-print">
+      <button type="button" class="secondary sm" id="configureBackupFolder" hidden>Autorizar pasta de backup</button>
+      <button type="button" class="primary sm" id="forceBackupBtn" hidden>Gravar em bkps</button>
+      <button type="button" class="secondary sm" id="quickBackupBtn">Baixar JSON</button>
+      <button type="button" class="quiet sm" id="importBackupBtn">Importar Backup (.json)</button>
+      <input type="file" id="importBackupInput" accept="application/json,.json" hidden>
+    </div>
+
+    <h3>Log de auditoria</h3>
+    <div class="log-table-wrap">
+      <table class="log-tbl">
+        <thead>
+          <tr>
+            <th>Data/Hora</th>
+            <th>Operador</th>
+            <th>Ação</th>
+            <th>Detalhes</th>
+          </tr>
+        </thead>
+        <tbody id="auditLogBody"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<!-- MODAL DE PIN -->
+<div id="pinModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="pinModalTitle">
+  <div class="modal-card">
+    <h3 id="pinModalTitle">Validação de PIN</h3>
+    <p id="pinModalDesc" class="muted" style="margin-bottom:12px">Digite o PIN do operador para confirmar.</p>
+    <div style="margin-bottom:10px">
+      <label for="pinModalOperator">Operador</label>
+      <select id="pinModalOperator"></select>
+    </div>
+    <div>
+      <label for="pinModalInput">PIN</label>
+      <input id="pinModalInput" type="password" maxlength="6" class="pin-input" placeholder="••••">
+    </div>
+    <div id="pinModalError" class="status-msg err" style="margin-top:10px"></div>
+    <div class="actions" style="justify-content:flex-end">
+      <button type="button" class="secondary sm" id="pinModalCancel">Cancelar</button>
+      <button type="button" class="primary sm" id="pinModalConfirm">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div id="printVoucherArea" aria-hidden="true"></div>
+<footer>
+  <div class="footer-credits"><strong>Unimed Litoral</strong><span>Desenvolvido por Alex Sandro</span></div>
+  <div>Almox Hospitalar v4.4 · Dados salvos localmente no navegador</div>
+</footer>
+</body>
+</html>

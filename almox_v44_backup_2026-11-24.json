@@ -1,0 +1,181 @@
+{
+  "users": [
+    {
+      "name": "Operador Padrão",
+      "role": "Almoxarife",
+      "pin": "",
+      "active": true
+    },
+    {
+      "name": "Almoxarife 01",
+      "role": "Almoxarife",
+      "pin": "1234",
+      "active": false
+    },
+    {
+      "name": "Supervisor Plantão",
+      "role": "Supervisor",
+      "pin": "9999",
+      "active": true
+    },
+    {
+      "name": "ALEX SANDRO",
+      "role": "Almoxarife",
+      "pin": "211074",
+      "active": true
+    }
+  ],
+  "activeOperator": "ALEX SANDRO",
+  "withdrawals": [
+    {
+      "id": "w_1795541269275_k5tm",
+      "protocol": "SAI-000002",
+      "createdAt": "24/11/2026, 14:27:49",
+      "createdBy": "ALEX SANDRO",
+      "requester": "ALEX",
+      "receiver": "ALEX",
+      "sector": "Almoxarifado",
+      "storekeeper": "ALEX SANDRO",
+      "reason": "Urgência / Emergência assistencial",
+      "notes": "",
+      "items": [
+        {
+          "product": "DIPIRONA",
+          "quantity": 1,
+          "unit": "Unidade",
+          "batch": "SACSC",
+          "expiry": "2026-05"
+        }
+      ],
+      "status": "done",
+      "erpReq": "EQWDWD",
+      "updatedAt": "24/11/2026, 14:31:00",
+      "updatedBy": "ALEX SANDRO"
+    }
+  ],
+  "loansOut": [],
+  "loansIn": [],
+  "auditLog": [
+    {
+      "ts": "24/11/2026, 14:40:14",
+      "operator": "ALEX SANDRO",
+      "action": "Backup JSON",
+      "details": "Backup exportado pelo operador"
+    },
+    {
+      "ts": "24/11/2026, 14:35:22",
+      "operator": "ALEX SANDRO",
+      "action": "Backup JSON",
+      "details": "Backup exportado pelo operador"
+    },
+    {
+      "ts": "24/11/2026, 14:33:55",
+      "operator": "ALEX SANDRO",
+      "action": "Troca de operador",
+      "details": "Operador alterado para ALEX SANDRO"
+    },
+    {
+      "ts": "24/11/2026, 14:33:13",
+      "operator": "Operador Padrão",
+      "action": "Troca de operador",
+      "details": "Operador alterado para Operador Padrão"
+    },
+    {
+      "ts": "24/11/2026, 14:31:00",
+      "operator": "ALEX SANDRO",
+      "action": "Edição de retirada",
+      "details": "Protocolo SAI-000002 atualizado por ALEX SANDRO"
+    },
+    {
+      "ts": "24/11/2026, 14:29:19",
+      "operator": "ALEX SANDRO",
+      "action": "Exclusão de retirada",
+      "details": "Protocolo SAI-000001 removido"
+    },
+    {
+      "ts": "24/11/2026, 14:28:28",
+      "operator": "ALEX SANDRO",
+      "action": "Requisição ERP",
+      "details": "SAI-000002 vinculado à req. EQWDWD"
+    },
+    {
+      "ts": "24/11/2026, 14:28:02",
+      "operator": "ALEX SANDRO",
+      "action": "Status de retirada",
+      "details": "SAI-000002 marcado como pendente"
+    },
+    {
+      "ts": "24/11/2026, 14:28:00",
+      "operator": "ALEX SANDRO",
+      "action": "Status de retirada",
+      "details": "SAI-000002 marcado como lançado"
+    },
+    {
+      "ts": "24/11/2026, 14:27:49",
+      "operator": "ALEX SANDRO",
+      "action": "Nova retirada",
+      "details": "Protocolo SAI-000002 criado para Almoxarifado (1 item/itens)"
+    },
+    {
+      "ts": "24/11/2026, 14:16:41",
+      "operator": "ALEX SANDRO",
+      "action": "Requisição ERP",
+      "details": "SAI-000001 vinculado à req. 121515112"
+    },
+    {
+      "ts": "24/11/2026, 14:16:00",
+      "operator": "ALEX SANDRO",
+      "action": "Nova retirada",
+      "details": "Protocolo SAI-000001 criado para Almoxarifado (1 item/itens)"
+    },
+    {
+      "ts": "24/11/2026, 14:09:29",
+      "operator": "ALEX SANDRO",
+      "action": "Exclusão de retirada",
+      "details": "Protocolo SAI-000001 removido"
+    },
+    {
+      "ts": "24/11/2026, 14:08:35",
+      "operator": "ALEX SANDRO",
+      "action": "Edição de retirada",
+      "details": "Protocolo SAI-000001 atualizado por ALEX SANDRO"
+    },
+    {
+      "ts": "24/11/2026, 14:07:56",
+      "operator": "ALEX SANDRO",
+      "action": "Status de retirada",
+      "details": "SAI-000001 marcado como pendente"
+    },
+    {
+      "ts": "24/11/2026, 14:07:55",
+      "operator": "ALEX SANDRO",
+      "action": "Status de retirada",
+      "details": "SAI-000001 marcado como lançado"
+    },
+    {
+      "ts": "24/11/2026, 14:07:38",
+      "operator": "ALEX SANDRO",
+      "action": "Nova retirada",
+      "details": "Protocolo SAI-000001 criado para CME (1 item/itens)"
+    },
+    {
+      "ts": "24/11/2026, 14:06:32",
+      "operator": "ALEX SANDRO",
+      "action": "Troca de operador",
+      "details": "Operador alterado para ALEX SANDRO"
+    },
+    {
+      "ts": "24/11/2026, 14:06:23",
+      "operator": "Operador Padrão",
+      "action": "Novo usuário",
+      "details": "Operador ALEX SANDRO cadastrado (Almoxarife)"
+    },
+    {
+      "ts": "24/11/2026, 14:06:06",
+      "operator": "Operador Padrão",
+      "action": "Cadastro de usuário",
+      "details": "Almoxarife 01 marcado como inativo"
+    }
+  ],
+  "lastBackupAt": "24/11/2026, 14:40:14"
+}
