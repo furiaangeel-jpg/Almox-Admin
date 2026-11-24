@@ -20,6 +20,7 @@ function activateTab(tabId) {
   if (tabId === 'reports') renderReports();
   if (tabId === 'users') renderUsersAndAudit();
   if (tabId === 'stock') renderStock();
+  if (tabId === 'handover') renderHandover();
 }
 
 document.querySelector('main').addEventListener('animationend', event => {
