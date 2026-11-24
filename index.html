@@ -15,6 +15,7 @@
 <script defer src="src/features/loans.js"></script>
 <script defer src="src/ui/vouchers.js"></script>
 <script defer src="src/data/backup.js"></script>
+<script defer src="src/features/stock.js"></script>
 <script defer src="src/app.js"></script>
 </head>
 <body>
@@ -57,6 +58,7 @@
     <button type="button" class="tab" data-tab="history" aria-controls="history" aria-pressed="false" id="tabHistoryBtn"><span>Histórico</span> <span id="pendingBadge" class="tag pending" hidden>0 pendentes</span></button>
     <button type="button" class="tab" data-tab="reports" aria-controls="reports" aria-pressed="false" id="tabReportsBtn"><span>Relatórios e Plantão</span></button>
     <button type="button" class="tab" data-tab="users" aria-controls="users" aria-pressed="false" id="tabUsersBtn"><span>Usuários e Auditoria</span></button>
+    <button type="button" class="tab" data-tab="stock" aria-controls="stock" aria-pressed="false" id="tabStockBtn"><span>Estoque</span> <span id="lowStockBadge" class="tag pending" hidden>0 baixo</span></button>
   </nav>
 </dialog>
 
@@ -594,6 +596,64 @@
       </table>
     </div>
   </section>
+
+  <!-- MÓDULO ESTOQUE -->
+  <section id="stock" class="panel hidden">
+    <div class="section-title">
+      <div>
+        <h2>Controle de estoque</h2>
+        <p class="muted">Cadastro de materiais, entradas, saídas e alertas de reposição.</p>
+      </div>
+      <button type="button" class="secondary sm" id="stockExportBtn">Exportar CSV</button>
+    </div>
+    <div class="stats stock-stats">
+      <div class="stat"><span>Materiais cadastrados</span><strong id="stockTotalItems">0</strong></div>
+      <div class="stat"><span>Unidades em estoque</span><strong id="stockTotalUnits">0</strong></div>
+      <div class="stat warn"><span>Abaixo do mínimo</span><strong id="stockLowCount">0</strong></div>
+      <div class="stat"><span>Movimentações</span><strong id="stockMoveCount">0</strong></div>
+    </div>
+    <h3 id="stockFormTitle">Cadastrar material</h3>
+    <form id="stockItemForm">
+      <input type="hidden" id="stockItemId">
+      <div class="grid">
+        <div><label for="stockCode">Código / referência</label><input id="stockCode" autocomplete="off" placeholder="Ex.: MAT-001"></div>
+        <div><label for="stockName">Descrição do material *</label><input id="stockName" required autocomplete="off" placeholder="Nome do material"></div>
+        <div><label for="stockCategory">Categoria</label><input id="stockCategory" placeholder="Ex.: Material hospitalar"></div>
+        <div><label for="stockUnit">Unidade de medida *</label><select id="stockUnit" required><option>Unidade</option><option>Pacote</option><option>Caixa</option><option>Frasco</option><option>Ampola</option><option>Comprimido</option><option>Rolo</option><option>Kit</option><option>Par</option><option>Litro</option><option>Outro</option></select></div>
+        <div><label for="stockMinimum">Estoque mínimo</label><input id="stockMinimum" type="number" min="0" step="any" value="0"></div>
+        <div><label for="stockLocation">Localização</label><input id="stockLocation" placeholder="Ex.: Prateleira A / Rua 2"></div>
+        <div id="stockInitialQtyWrap"><label for="stockInitialQty">Quantidade inicial</label><input id="stockInitialQty" type="number" min="0" step="any" value="0"></div>
+      </div>
+      <div class="actions form-actions">
+        <button type="submit" class="primary" id="stockSaveItemBtn">Salvar material</button>
+        <button type="button" class="quiet" id="stockCancelEditBtn">Limpar</button>
+      </div>
+      <div id="stockItemMessage" class="status-msg" role="status"></div>
+    </form>
+    <h3>Registrar movimentação</h3>
+    <div class="grid stock-movement-form">
+      <div><label for="stockMoveType">Tipo</label><select id="stockMoveType"><option value="entry">Entrada</option><option value="exit">Saída</option></select></div>
+      <div><label for="stockMoveItem">Material *</label><select id="stockMoveItem"><option value="">Selecione um material...</option></select></div>
+      <div><label for="stockMoveQty">Quantidade *</label><input id="stockMoveQty" type="number" min="0.01" step="any" value="1"></div>
+      <div><label for="stockMoveReason">Motivo / documento</label><input id="stockMoveReason" placeholder="Ex.: Nota fiscal, reposição, setor..."></div>
+      <div class="full"><button type="button" class="primary" id="stockRegisterMoveBtn">Registrar entrada / saída</button></div>
+    </div>
+    <div id="stockMoveMessage" class="status-msg" role="status"></div>
+    <h3>Materiais em estoque</h3>
+    <div class="filter-bar">
+      <label for="stockSearch">Pesquisar material</label>
+      <input id="stockSearch" placeholder="Nome, código, categoria ou localização...">
+      <label class="check-inline" style="margin-top:8px"><input type="checkbox" id="stockOnlyLow"> Mostrar somente estoque baixo</label>
+    </div>
+    <div id="stockItemsList"></div>
+    <h3>Histórico de movimentações</h3>
+    <div class="filter-bar">
+      <label for="stockMovementSearch">Pesquisar movimentação</label>
+      <input id="stockMovementSearch" placeholder="Material, operador, motivo ou tipo...">
+    </div>
+    <div id="stockMovementsList"></div>
+  </section>
+
 </main>
 
 <!-- MODAL DE PIN -->
