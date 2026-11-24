@@ -265,3 +265,18 @@ button.stat.warn:hover{border-color:var(--amber);background:#fff4d8}
   .panel-enter,.panel-enter .bar-fill,.recent-change,.navigation-drawer[open]{animation:none}
   button:not(:disabled):active{transform:none}
 }
+
+
+/* Módulo de estoque */
+.stock-stats{margin-top:12px}
+.stock-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center}
+.stock-item-main{min-width:0}
+.stock-item-title{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.stock-item-qty{font-size:18px;font-weight:800;color:var(--primary-dark);white-space:nowrap;font-variant-numeric:tabular-nums}
+.stock-item-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.stock-low{border-color:#e9c46a;background:#fffdf5}
+.stock-movement-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+.stock-in{color:var(--green);font-weight:750}
+.stock-out{color:var(--red);font-weight:750}
+.stock-movement-form{align-items:end}
+@media(max-width:600px){.stock-item,.stock-movement-row{grid-template-columns:1fr}.stock-item-qty{font-size:16px}}
