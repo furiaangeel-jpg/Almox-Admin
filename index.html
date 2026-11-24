@@ -16,6 +16,7 @@
 <script defer src="src/ui/vouchers.js"></script>
 <script defer src="src/data/backup.js"></script>
 <script defer src="src/features/stock.js"></script>
+<script defer src="src/features/handover.js"></script>
 <script defer src="src/app.js"></script>
 </head>
 <body>
@@ -59,6 +60,7 @@
     <button type="button" class="tab" data-tab="reports" aria-controls="reports" aria-pressed="false" id="tabReportsBtn"><span>Relatórios e Plantão</span></button>
     <button type="button" class="tab" data-tab="users" aria-controls="users" aria-pressed="false" id="tabUsersBtn"><span>Usuários e Auditoria</span></button>
     <button type="button" class="tab" data-tab="stock" aria-controls="stock" aria-pressed="false" id="tabStockBtn"><span>Estoque</span> <span id="lowStockBadge" class="tag pending" hidden>0 baixo</span></button>
+    <button type="button" class="tab" data-tab="handover" aria-controls="handover" aria-pressed="false" id="tabHandoverBtn"><span>Passagem de Plantão</span> <span id="handoverOpenBadge" class="tag pending" hidden>0 abertas</span></button>
   </nav>
 </dialog>
 
@@ -652,6 +654,54 @@
       <input id="stockMovementSearch" placeholder="Material, operador, motivo ou tipo...">
     </div>
     <div id="stockMovementsList"></div>
+  </section>
+
+
+  <!-- MÓDULO PASSAGEM DE PLANTÃO -->
+  <section id="handover" class="panel hidden">
+    <div class="section-title">
+      <div>
+        <h2>Passagem de Plantão</h2>
+        <p class="muted">Registre ocorrências, pendências e informações importantes para a continuidade do trabalho no almoxarifado.</p>
+      </div>
+      <button type="button" class="secondary sm" id="handoverExportBtn">Exportar histórico CSV</button>
+    </div>
+    <div class="stats handover-stats">
+      <div class="stat"><span>Passagens registradas</span><strong id="handoverTotal">0</strong></div>
+      <div class="stat warn"><span>Aguardando recebimento</span><strong id="handoverPending">0</strong></div>
+      <div class="stat"><span>Recebidas</span><strong id="handoverReceived">0</strong></div>
+      <div class="stat"><span>Alta prioridade em aberto</span><strong id="handoverUrgent">0</strong></div>
+    </div>
+    <h3>Nova passagem</h3>
+    <form id="handoverForm">
+      <div class="grid">
+        <div><label for="handoverDate">Data *</label><input id="handoverDate" type="date" required></div>
+        <div><label for="handoverShift">Turno / Plantão *</label><select id="handoverShift" required><option value="Diurno">Diurno</option><option value="Noturno">Noturno</option><option value="12x36">12x36</option><option value="Outro">Outro</option></select></div>
+        <div><label for="handoverOutgoing">Responsável que está passando *</label><input id="handoverOutgoing" required autocomplete="off" placeholder="Nome do colaborador"></div>
+        <div><label for="handoverIncoming">Responsável que está recebendo</label><input id="handoverIncoming" autocomplete="off" placeholder="Nome do próximo colaborador"></div>
+        <div><label for="handoverStart">Início do plantão</label><input id="handoverStart" type="time"></div>
+        <div><label for="handoverEnd">Fim do plantão</label><input id="handoverEnd" type="time"></div>
+        <div><label for="handoverPriority">Prioridade geral</label><select id="handoverPriority"><option value="Normal">Normal</option><option value="Atenção">Atenção</option><option value="Alta">Alta</option></select></div>
+        <div><label for="handoverStatus">Situação inicial</label><select id="handoverStatus"><option value="open">Aguardando recebimento</option><option value="received">Recebida pelo próximo plantão</option></select></div>
+        <div class="full"><label for="handoverOccurrences">Ocorrências / acontecimentos do plantão</label><textarea id="handoverOccurrences" rows="3" placeholder="Registre fatos relevantes ocorridos durante o turno..."></textarea></div>
+        <div class="full"><label for="handoverPendingTasks">Pendências e tarefas para o próximo plantão</label><textarea id="handoverPendingTasks" rows="3" placeholder="O que precisa ser acompanhado ou concluído?"></textarea></div>
+        <div class="full"><label for="handoverStock">Materiais em falta / reposição / estoque</label><textarea id="handoverStock" rows="2" placeholder="Materiais em falta, entregas aguardadas ou necessidade de reposição..."></textarea></div>
+        <div class="full"><label for="handoverEquipment">Equipamentos / manutenção / empréstimos</label><textarea id="handoverEquipment" rows="2" placeholder="Equipamentos com problema, empréstimos em aberto ou devoluções aguardadas..."></textarea></div>
+        <div class="full"><label for="handoverNotes">Observações adicionais</label><textarea id="handoverNotes" rows="2" placeholder="Outras informações importantes..."></textarea></div>
+      </div>
+      <p class="muted handover-privacy">Atenção: não registre nomes de pacientes, prontuários ou dados pessoais/sensíveis neste campo. Utilize somente informações operacionais do almoxarifado.</p>
+      <div class="actions form-actions">
+        <button type="submit" class="primary" id="handoverSaveBtn">Salvar passagem de plantão</button>
+        <button type="button" class="quiet" id="handoverClearBtn">Limpar formulário</button>
+      </div>
+      <div id="handoverMessage" class="status-msg" role="status"></div>
+    </form>
+    <h3>Histórico de passagens</h3>
+    <div class="grid filter-bar">
+      <div><label for="handoverSearch">Pesquisar</label><input id="handoverSearch" placeholder="Responsável, turno, ocorrência ou pendência..."></div>
+      <div><label for="handoverFilter">Filtrar situação</label><select id="handoverFilter"><option value="">Todas</option><option value="open">Aguardando recebimento</option><option value="received">Recebidas</option></select></div>
+    </div>
+    <div id="handoverRecords"></div>
   </section>
 
 </main>
