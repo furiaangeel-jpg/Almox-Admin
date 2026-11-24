@@ -280,3 +280,20 @@ button.stat.warn:hover{border-color:var(--amber);background:#fff4d8}
 .stock-out{color:var(--red);font-weight:750}
 .stock-movement-form{align-items:end}
 @media(max-width:600px){.stock-item,.stock-movement-row{grid-template-columns:1fr}.stock-item-qty{font-size:16px}}
+
+
+/* Módulo Passagem de Plantão */
+.handover-stats{margin-top:12px}
+.handover-privacy{margin:12px 0 0;padding:9px 11px;background:#fff8e8;border:1px solid #f0d9a5;border-radius:8px;color:#80530c}
+.handover-card{border:1px solid var(--line);border-radius:11px;padding:14px;margin-top:10px;background:#fff}
+.handover-card.priority-high{border-left:4px solid var(--red)}
+.handover-card.priority-attention{border-left:4px solid var(--amber)}
+.handover-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.handover-card-title{font-weight:800;color:var(--primary-dark)}
+.handover-card-meta{font-size:12px;color:var(--muted);margin-top:3px}
+.handover-card-body{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.handover-field{min-width:0;background:#f7faf8;border:1px solid #e7eee9;border-radius:8px;padding:9px 10px}
+.handover-field strong{display:block;color:var(--primary-dark);font-size:12px;margin-bottom:4px}
+.handover-field p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px}
+.handover-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)}
+@media(max-width:600px){.handover-card-body{grid-template-columns:1fr}}
