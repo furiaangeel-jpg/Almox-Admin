@@ -19,6 +19,7 @@ function activateTab(tabId) {
   if (tabId === 'loan_in') renderLoansInTab();
   if (tabId === 'reports') renderReports();
   if (tabId === 'users') renderUsersAndAudit();
+  if (tabId === 'stock') renderStock();
 }
 
 document.querySelector('main').addEventListener('animationend', event => {
