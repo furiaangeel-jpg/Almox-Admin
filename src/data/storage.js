@@ -11,6 +11,8 @@ const defaultDb = {
   withdrawals: [],
   loansOut: [],
   loansIn: [],
+  stockItems: [],
+  stockMovements: [],
   auditLog: [],
   lastBackupAt: null
 };
@@ -27,6 +29,8 @@ function loadDb() {
     return {
       ...cloneDefaultDb(),
       ...parsed,
+      stockItems: Array.isArray(parsed.stockItems) ? parsed.stockItems : [],
+      stockMovements: Array.isArray(parsed.stockMovements) ? parsed.stockMovements : [],
       users: Array.isArray(parsed.users) && parsed.users.length ? parsed.users : cloneDefaultDb().users
     };
   } catch (e) {
