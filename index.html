@@ -56,8 +56,13 @@
   </div>
   <nav class="tabs" aria-label="Seções do almoxarifado">
     <button type="button" class="tab active" data-tab="new" aria-controls="new" aria-pressed="true" id="tabNewBtn"><span>Nova retirada</span></button>
-    <button type="button" class="tab" data-tab="loan_out" aria-controls="loan_out" aria-pressed="false" id="tabLoanOutBtn"><span>Saída de empréstimo</span> <span id="openLoansBadge" class="tag loan-open" hidden>0 abertos</span></button>
-    <button type="button" class="tab" data-tab="loan_in" aria-controls="loan_in" aria-pressed="false" id="tabLoanInBtn"><span>Entrada de empréstimo</span> <span id="openLoansInBadge" class="tag loan-open" hidden>0 abertos</span></button>
+    <details class="nav-group">
+      <summary class="tab nav-group-title">Empréstimos</summary>
+      <div class="nav-subtabs">
+        <button type="button" class="tab nav-subtab" data-tab="loan_out" aria-controls="loan_out" aria-pressed="false" id="tabLoanOutBtn"><span>Saída de empréstimo</span> <span id="openLoansBadge" class="tag loan-open" hidden>0 abertos</span></button>
+        <button type="button" class="tab nav-subtab" data-tab="loan_in" aria-controls="loan_in" aria-pressed="false" id="tabLoanInBtn"><span>Entrada de empréstimo</span> <span id="openLoansInBadge" class="tag loan-open" hidden>0 abertos</span></button>
+      </div>
+    </details>
     <button type="button" class="tab" data-tab="history" aria-controls="history" aria-pressed="false" id="tabHistoryBtn"><span>Histórico</span> <span id="pendingBadge" class="tag pending" hidden>0 pendentes</span></button>
     <button type="button" class="tab" data-tab="reports" aria-controls="reports" aria-pressed="false" id="tabReportsBtn"><span>Relatórios e Plantão</span></button>
     <button type="button" class="tab" data-tab="users" aria-controls="users" aria-pressed="false" id="tabUsersBtn"><span>Usuários e Auditoria</span></button>
