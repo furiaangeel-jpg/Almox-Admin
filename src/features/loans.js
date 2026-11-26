@@ -179,6 +179,7 @@ const {
       renderLoansOut(savedLoan?.id);
       renderLoansInTab();
       renderReports();
+      saveVoucherPdf(savedLoan || null, 'loan_out', 'loan_out');
       if (shouldPrint) {
         triggerVoucherPrint(savedLoan || null, 'loan_out', 'loan_out');
       }
@@ -288,7 +289,7 @@ const {
     runWithPin('Confirme seu PIN para registrar esta entrada de empréstimo.', (confirmedOp) => {
       const nowStr = new Date().toLocaleString('pt-BR');
       const proto = nextProtocol('ENT', db.loansIn);
-      db.loansIn.unshift({
+      const savedEntry = {
         id: 'li_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
         protocol: proto,
         createdAt: nowStr,
@@ -299,7 +300,8 @@ const {
         refProtocol,
         notes: document.getElementById('loanInNotes').value.trim(),
         items: [...loanInItems]
-      });
+      };
+      db.loansIn.unshift(savedEntry);
 
       if (refProtocol) {
         const matched = db.loansOut.find(l => l.protocol.toUpperCase() === refProtocol.toUpperCase() && l.status === 'open');
@@ -322,6 +324,7 @@ const {
       renderLoansOut();
       renderLoansInTab();
       renderReports();
+      saveVoucherPdf(savedEntry, 'loan_in', 'history');
     });
   });
 
@@ -334,7 +337,7 @@ const {
       loan.returnedAt = nowStr;
 
       const entProto = nextProtocol('ENT', db.loansIn);
-      db.loansIn.unshift({
+      const returnedEntry = {
         id: 'li_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
         protocol: entProto,
         createdAt: nowStr,
@@ -345,13 +348,15 @@ const {
         refProtocol: loan.protocol,
         notes: `Devolução automática referente à saída ${loan.protocol}`,
         items: loan.items.map(i => ({ ...i, condition: 'Íntegro / Conforme' }))
-      });
+      };
+      db.loansIn.unshift(returnedEntry);
 
       addAudit('Baixa de empréstimo', `${loan.protocol} marcado como devolvido (${entProto})`, confirmedOp);
       saveDb();
       renderLoansOut();
       renderLoansInTab();
       renderReports();
+      saveVoucherPdf(returnedEntry, 'loan_in', 'history');
     });
   }
 
