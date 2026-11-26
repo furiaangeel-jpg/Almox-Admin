@@ -148,6 +148,18 @@ const {
     activePrintRecord = null;
   });
 
+  async function saveVoucherPdf(rec, type = 'withdrawal', context = 'history') {
+    if (!rec) return { saved: false, reason: 'missing-record' };
+    const copyContext = context === 'loan_out' ? 'loan_out' : 'history';
+    renderPrintVoucherArea(rec, type, shouldPrintTwoCopies(copyContext));
+    const element = document.querySelector('#printVoucherArea .print-sheet');
+    const module = type === 'loan_out' ? 'emprestimos/saida'
+      : type === 'loan_in' ? 'emprestimos/entrada' : 'retiradas-avulsas';
+    const title = type === 'loan_out' ? 'Comprovante de saída de empréstimo'
+      : type === 'loan_in' ? 'Comprovante de entrada de empréstimo' : 'Comprovante de retirada avulsa';
+    return saveReceiptElement({ module, record: rec, element, title });
+  }
+
   function printRecordVoucher(id, type = 'withdrawal') {
     const list = type === 'loan_out' ? db.loansOut : type === 'loan_in' ? db.loansIn : db.withdrawals;
     const found = list.find(x => x.id === id) || null;
@@ -158,5 +170,6 @@ const {
   return {
     triggerVoucherPrint,
     printRecordVoucher,
+    saveVoucherPdf,
   };
 })();
