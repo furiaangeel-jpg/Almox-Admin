@@ -202,8 +202,9 @@ const {
       showMsg(msgEl, `Registro ${proto} salvo com sucesso!`, 'ok');
       renderHistory();
       renderReports();
+      const savedRec = db.withdrawals.find(w => w.protocol === proto) || null;
+      saveVoucherPdf(savedRec, 'withdrawal', 'withdrawal');
       if (shouldPrint) {
-        const savedRec = db.withdrawals.find(w => w.protocol === proto) || null;
         triggerVoucherPrint(savedRec, 'withdrawal', 'withdrawal');
       }
     });
