@@ -80,6 +80,30 @@ const renderHandover = (() => {
     });
   }
 
+  function archiveHandover(record) {
+    if (!record) return;
+    const validated = isValidated(record);
+    const fields = [
+      ['Notas fiscais recebidas', String(Number(record.notesReceived || 0))],
+      ['Ocorrências do plantão', record.occurrences],
+      ['Pendências para o próximo plantão', record.pendingTasks],
+      ['Materiais em falta / reposição / estoque', record.stock],
+      ['Observações adicionais', record.notes]
+    ].filter(item => item[1] !== undefined && item[1] !== null && item[1] !== '');
+    const html = '<h1 style="color:#075b3b;font-size:21px">Passagem de Plantão · ' + escapeHtml(record.protocol) + '</h1>' +
+      '<div style="padding:12px;border:1px solid #d5e0da;border-radius:8px;background:#f1f6f3">' +
+      '<b>Data:</b> ' + formatDate(record.date) + ' · <b>Escala:</b> 12x36 · <b>Horário:</b> ' + escapeHtml(record.start || '--:--') + ' às ' + escapeHtml(record.end || '--:--') +
+      '<br><b>Responsável:</b> ' + escapeHtml(record.outgoing) +
+      '<br><b>Prioridade:</b> ' + escapeHtml(record.priority || 'Normal') + '</div>' +
+      fields.map(item => '<h2 style="font-size:14px;margin:16px 0 4px">' + item[0] + '</h2><p style="white-space:pre-wrap;line-height:1.45;margin:0 0 8px">' + escapeHtml(item[1]) + '</p>').join('') +
+      '<div style="margin-top:14px;padding:10px;border:1px solid #d5e0da;border-radius:8px">' +
+      (validated
+        ? 'Validada por <b>' + escapeHtml(record.validatedBy || 'Supervisor') + '</b> em ' + escapeHtml(record.validatedAt || 'data não informada')
+        : 'Aguardando validação do supervisor') +
+      '</div><p style="margin-top:30px">Assinatura de quem passou: ______________________________<br><br>Assinatura do supervisor: ______________________________</p>';
+    return saveReceiptHtml({ module: 'passagem-de-plantao', record, title: 'Comprovante de passagem de plantão', html });
+  }
+
   function persistRecord(validatedBy=null){
     const outgoing=$('handoverOutgoing').value.trim();
     const notesReceived=Number($('handoverNotesReceived').value);
@@ -112,6 +136,7 @@ const renderHandover = (() => {
     addAudit('Passagem de plantão registrada',protocol+' · 12x36 · '+outgoing);
     if(validatedBy)addAudit('Passagem de plantão validada',protocol+' validada por '+validatedBy,validatedBy);
     saveDb();resetForm();renderAll();
+    archiveHandover(record);
     showMsg($('handoverMessage'),'Passagem '+protocol+' salva com sucesso'+(validatedBy?' e validada pelo supervisor.':'. Aguardando validação do supervisor.'));
   }
 
@@ -134,6 +159,7 @@ const renderHandover = (() => {
       record.validatedAt=new Date().toLocaleString('pt-BR');
       addAudit('Passagem de plantão validada',record.protocol+' validada por '+name,name);
       saveDb();renderAll();
+      archiveHandover(record);
     });
   }
 
