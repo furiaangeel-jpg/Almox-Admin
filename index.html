@@ -9,6 +9,8 @@
 <script defer src="src/ui/errors.js"></script>
 <script defer src="src/data/storage.js"></script>
 <script defer src="src/ui/common.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLus+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script defer src="src/data/receipts.js"></script>
 <script defer src="src/features/reports.js"></script>
 <script defer src="src/features/operators.js"></script>
 <script defer src="src/features/withdrawals.js"></script>
@@ -581,6 +583,13 @@
       <button type="button" class="secondary sm" id="quickBackupBtn">Baixar JSON</button>
       <button type="button" class="quiet sm" id="importBackupBtn">Importar Backup (.json)</button>
       <input type="file" id="importBackupInput" accept="application/json,.json" hidden>
+    </div>
+
+    <h3>Comprovantes em SharePoint / OneDrive</h3>
+    <p class="muted">Selecione a pasta “comprovantes” que já esteja sincronizada pelo OneDrive com a biblioteca privada do SharePoint. O sistema criará as subpastas por módulo, ano e mês e gravará os PDFs novos automaticamente.</p>
+    <p id="receiptArchiveStatus" class="receipt-archive-status" role="status">Verificando pasta autorizada...</p>
+    <div class="actions backup-actions no-print">
+      <button type="button" class="primary sm" id="configureReceiptFolder">Selecionar / reautorizar pasta</button>
     </div>
 
     <h3>Log de auditoria</h3>
