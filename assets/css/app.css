@@ -297,3 +297,10 @@ button.stat.warn:hover{border-color:var(--amber);background:#fff4d8}
 .handover-field p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px}
 .handover-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)}
 @media(max-width:600px){.handover-card-body{grid-template-columns:1fr}}
+
+.handover-approval{background:#f4f8f5;border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+.handover-approval .check-inline{background:transparent;border:0;padding:0}
+.handover-approval .check-inline input{width:17px;height:17px}
+.handover-approval p{margin:7px 0 0}
+.handover-validation{margin-top:10px;padding:9px 11px;border-radius:8px;background:var(--primary-light);color:var(--primary-dark);font-size:12px}
+.handover-validation.pending{background:#fff8e8;color:#80530c}
