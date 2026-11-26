@@ -69,7 +69,16 @@ const renderStock = (() => {
     }else{
       const item={id:'st_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),code,name,category:$('stockCategory').value.trim(),unit,minimum,location:$('stockLocation').value.trim(),quantity:initial,active:true,createdAt:nowLabel()};
       db.stockItems.unshift(item);
-      if(initial>0)db.stockMovements.unshift({id:'sm_'+Date.now(),itemId:item.id,itemName:item.name,type:'entry',quantity:initial,unit:item.unit,reason:'Saldo inicial do cadastro',operator:db.activeOperator,date:nowLabel()});
+      if(initial>0){
+        const movement={
+          id:'sm_'+Date.now(),protocol:nextStockProtocol(),itemId:item.id,itemName:item.name,
+          type:'entry',quantity:initial,unit:item.unit,reason:'Saldo inicial do cadastro',
+          operator:db.activeOperator,date:nowLabel(),createdAt:new Date().toISOString(),
+          balanceBefore:0,balanceAfter:initial
+        };
+        db.stockMovements.unshift(movement);
+        archiveStockMovement(movement,item,0,initial);
+      }
       addAudit('Cadastro de material no estoque','Material '+name+' cadastrado com saldo inicial '+fmt(initial)+' '+unit);
     }
     saveDb();resetForm();renderAll();showMsg($('stockItemMessage'),'Material salvo com sucesso.','ok');
@@ -79,17 +88,50 @@ const renderStock = (() => {
     editingId=id;$('stockItemId').value=id;$('stockCode').value=item.code||'';$('stockName').value=item.name;$('stockCategory').value=item.category||'';$('stockUnit').value=item.unit;$('stockMinimum').value=item.minimum??0;$('stockLocation').value=item.location||'';
     $('stockInitialQtyWrap').hidden=true;$('stockFormTitle').textContent='Editar material';$('stockSaveItemBtn').textContent='Salvar alterações';$('stockName').focus();clearMsg($('stockItemMessage'));
   }
+  function nextStockProtocol(){
+    const count=(db.stockMovements||[]).reduce((max,m)=>{
+      const match=/^EST-(\\d+)$/.exec(m.protocol||'');
+      return match?Math.max(max,Number(match[1])):max;
+    },0)+1;
+    return 'EST-'+String(count).padStart(6,'0');
+  }
+  function archiveStockMovement(movement,item,balanceBefore,balanceAfter){
+    if(!movement)return;
+    const kind=movement.type==='entry'?'Entrada':'Saída';
+    const html='<h1 style="color:#075b3b;font-size:21px">Comprovante de '+kind+' de Estoque · '+escapeHtml(movement.protocol)+'</h1>'+
+      '<div style="padding:12px;border:1px solid #d5e0da;border-radius:8px;background:#f1f6f3">'+
+      '<b>Data:</b> '+escapeHtml(movement.date)+'<br><b>Operador:</b> '+escapeHtml(movement.operator)+
+      '<br><b>Material:</b> '+escapeHtml(item.name)+' '+(item.code?'('+escapeHtml(item.code)+')':'')+
+      '<br><b>Quantidade:</b> '+fmt(movement.quantity)+' '+escapeHtml(item.unit)+
+      '<br><b>Saldo anterior:</b> '+fmt(balanceBefore)+' '+escapeHtml(item.unit)+
+      '<br><b>Saldo atual:</b> '+fmt(balanceAfter)+' '+escapeHtml(item.unit)+
+      '<br><b>Motivo / documento:</b> '+escapeHtml(movement.reason||'Não informado')+'</div>';
+    return saveReceiptHtml({
+      module:'estoque/'+(movement.type==='entry'?'entrada':'saida'),
+      record:movement,
+      title:'Comprovante de '+kind.toLowerCase()+' de estoque',
+      html
+    });
+  }
   function registerMovement(){
     const item=db.stockItems.find(x=>x.id===$('stockMoveItem').value);
     const quantity=num($('stockMoveQty').value);
     const type=$('stockMoveType').value;
     if(!item||quantity<=0){showMsg($('stockMoveMessage'),'Selecione um material e informe uma quantidade maior que zero.','err');return;}
     if(type==='exit'&&quantity>num(item.quantity)){showMsg($('stockMoveMessage'),'Saldo insuficiente. Disponível: '+fmt(item.quantity)+' '+item.unit+'.','err');return;}
-    item.quantity=num(item.quantity)+(type==='entry'?quantity:-quantity);
+    const balanceBefore=num(item.quantity);
+    item.quantity=balanceBefore+(type==='entry'?quantity:-quantity);
     const reason=$('stockMoveReason').value.trim();
-    db.stockMovements.unshift({id:'sm_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),itemId:item.id,itemName:item.name,type,quantity,unit:item.unit,reason,operator:db.activeOperator,date:nowLabel()});
+    const movement={
+      id:'sm_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),
+      protocol:nextStockProtocol(),itemId:item.id,itemName:item.name,type,quantity,unit:item.unit,
+      reason,operator:db.activeOperator,date:nowLabel(),createdAt:new Date().toISOString(),
+      balanceBefore,balanceAfter:num(item.quantity)
+    };
+    db.stockMovements.unshift(movement);
     addAudit(type==='entry'?'Entrada no estoque':'Saída do estoque',fmt(quantity)+' '+item.unit+' de '+item.name+(reason?' — '+reason:''));
     saveDb();$('stockMoveQty').value='1';$('stockMoveReason').value='';renderAll();
+    archiveStockMovement(movement,item,balanceBefore,num(item.quantity));
     showMsg($('stockMoveMessage'),(type==='entry'?'Entrada':'Saída')+' registrada. Saldo atual: '+fmt(item.quantity)+' '+item.unit+'.','ok');
   }
   function exportCsv(){
