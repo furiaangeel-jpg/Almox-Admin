@@ -304,3 +304,8 @@ button.stat.warn:hover{border-color:var(--amber);background:#fff4d8}
 .handover-approval p{margin:7px 0 0}
 .handover-validation{margin-top:10px;padding:9px 11px;border-radius:8px;background:var(--primary-light);color:var(--primary-dark);font-size:12px}
 .handover-validation.pending{background:#fff8e8;color:#80530c}
+
+.receipt-archive-status{margin:8px 0;padding:9px 11px;background:#f4f8f5;border:1px solid var(--line);border-radius:8px;color:var(--muted);font-size:13px}
+.receipt-archive-status.ok{display:block;background:var(--primary-light);border-color:#b7dec9;color:var(--primary-dark);font-weight:650}
+.receipt-archive-status.err{display:block;background:var(--red-bg);border-color:#f5c2c7;color:var(--red);font-weight:650}
+.receipt-pdf-export{font-family:Arial,sans-serif}
