@@ -215,42 +215,6 @@
       <h2 id="loanFormTitle">Saída de empréstimo (material / equipamento)</h2>
       <a class="section-link" href="#loanListTitle">Ver saídas registradas</a>
     </div>
-    <h3>Saídas em aberto — aguardando devolução</h3>
-    <p class="muted loan-entry-guidance">Atenção: os registros exibidos nesta área são apenas saídas de empréstimo ainda não devolvidas. Eles não são entradas. Para registrar a entrada, use “Dar baixa na devolução” ou preencha o formulário de nova entrada abaixo.</p>
-    <div class="grid filter-bar" id="loanOpenFilters">
-      <div>
-        <label for="loanOpenSearch">Buscar saída em aberto</label>
-        <input id="loanOpenSearch" placeholder="Protocolo EMP-, setor, pessoa, item ou lote...">
-      </div>
-      <div>
-        <label for="loanOpenSectorFilter">Filtrar por setor</label>
-        <select id="loanOpenSectorFilter">
-          <option value="">Todos os setores</option>
-          <option value="Atendimento">Atendimento</option>
-          <option value="CME">CME</option>
-          <option value="Farmácia">Farmácia</option>
-          <option value="Farmácia Setor">Farmácia Setor</option>
-          <option value="Farmácia Oncológico">Farmácia Oncológico</option>
-          <option value="Hospitalidade">Hospitalidade</option>
-          <option value="Unidade de Internação">Unidade de Internação</option>
-          <option value="Centro Cirúrgico">Centro Cirúrgico</option>
-          <option value="Endoscopia">Endoscopia</option>
-          <option value="CTI">CTI</option>
-          <option value="Nutrição">Nutrição</option>
-          <option value="Almoxarifado">Almoxarifado</option>
-          <option value="Imagem">Imagem</option>
-          <option value="Radiologia">Radiologia</option>
-          <option value="Mamografia">Mamografia</option>
-          <option value="Tomografia">Tomografia</option>
-          <option value="Pronto Atendimento">Pronto Atendimento</option>
-          <option value="Laboratório">Laboratório</option>
-          <option value="Ortopedia">Ortopedia</option>
-          <option value="Outros">Outros</option>
-        </select>
-      </div>
-    </div>
-    <div id="openLoansForEntryList"></div>
-
     <h3>Dados do empréstimo</h3>
 
     <div class="grid">
@@ -370,6 +334,42 @@
       </div>
     </div>
     <div id="loanRecords"></div>
+
+    <h3>Saídas em aberto — aguardando devolução</h3>
+    <p class="muted loan-entry-guidance">Atenção: os registros exibidos nesta área são apenas saídas de empréstimo ainda não devolvidas. Eles não são entradas. Para registrar a entrada, use “Dar baixa na devolução” ou preencha o formulário de nova entrada abaixo.</p>
+    <div class="grid filter-bar" id="loanOpenFilters">
+      <div>
+        <label for="loanOpenSearch">Buscar saída em aberto</label>
+        <input id="loanOpenSearch" placeholder="Protocolo EMP-, setor, pessoa, item ou lote...">
+      </div>
+      <div>
+        <label for="loanOpenSectorFilter">Filtrar por setor</label>
+        <select id="loanOpenSectorFilter">
+          <option value="">Todos os setores</option>
+          <option value="Atendimento">Atendimento</option>
+          <option value="CME">CME</option>
+          <option value="Farmácia">Farmácia</option>
+          <option value="Farmácia Setor">Farmácia Setor</option>
+          <option value="Farmácia Oncológico">Farmácia Oncológico</option>
+          <option value="Hospitalidade">Hospitalidade</option>
+          <option value="Unidade de Internação">Unidade de Internação</option>
+          <option value="Centro Cirúrgico">Centro Cirúrgico</option>
+          <option value="Endoscopia">Endoscopia</option>
+          <option value="CTI">CTI</option>
+          <option value="Nutrição">Nutrição</option>
+          <option value="Almoxarifado">Almoxarifado</option>
+          <option value="Imagem">Imagem</option>
+          <option value="Radiologia">Radiologia</option>
+          <option value="Mamografia">Mamografia</option>
+          <option value="Tomografia">Tomografia</option>
+          <option value="Pronto Atendimento">Pronto Atendimento</option>
+          <option value="Laboratório">Laboratório</option>
+          <option value="Ortopedia">Ortopedia</option>
+          <option value="Outros">Outros</option>
+        </select>
+      </div>
+    </div>
+    <div id="openLoansForEntryList"></div>
   </section>
 
   <!-- ABA 3: ENTRADA DE EMPRÉSTIMO -->
